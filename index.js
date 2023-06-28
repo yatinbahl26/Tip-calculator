@@ -1,0 +1,85 @@
+"use strict";
+
+const inputBillAmount = document.querySelector(".input--bill__amount");
+const inputBillPeople = document.querySelector(".input--bill__person");
+
+const tipPercentage = document.querySelectorAll(".tip-percentage");
+const customTipPercentage = document.querySelector(".custom--tip");
+
+const displayTip = document.querySelector(".tip-per--person");
+const displayTotal = document.querySelector(".total--amount");
+
+const btnReset = document.querySelector(".reset--btn");
+const error = document.querySelector(".cannot--zero");
+
+inputBillAmount.addEventListener("input", billInputFun);
+inputBillPeople.addEventListener("input", peopleInputFun);
+customTipPercentage.addEventListener("input", tipInputFun);
+btnReset.addEventListener("click", resetCalculator);
+
+inputBillAmount.value = "0.0";
+inputBillPeople.value = "1";
+
+let billValue;
+let peopleValue = 1;
+let tipValue;
+
+function billInputFun() {
+  billValue = parseFloat(inputBillAmount.value);
+  calculateTip();
+}
+
+function peopleInputFun() {
+  peopleValue = parseFloat(inputBillPeople.value);
+  if (peopleValue < 1) {
+    error.style.display = "flex";
+    inputBillPeople.style.border = "solid 1px red";
+  } else {
+    error.style.display = "none";
+    inputBillPeople.style.border = "none";
+    calculateTip();
+  }
+}
+
+function tipInputFun(event) {
+  tipValue = parseFloat(event.target.value) / 100;
+  tipPercentage.forEach(function (val) {
+    val.classList.remove("tip-percentage--active");
+  });
+  calculateTip();
+}
+
+tipPercentage.forEach(function (val) {
+  val.addEventListener("click", handleClick);
+});
+
+function handleClick(event) {
+  tipPercentage.forEach(function (val) {
+    val.classList.remove("tip-percentage--active");
+    if (event.target.innerHTML == val.innerHTML) {
+      val.classList.add("tip-percentage--active");
+      tipValue = parseFloat(val.innerHTML) / 100;
+    }
+  });
+  calculateTip();
+}
+
+function calculateTip() {
+  if (peopleValue >= 1) {
+    let tipAmount = (billValue * tipValue) / peopleValue;
+    let total = (billValue + tipAmount) / peopleValue;
+    displayTip.textContent = "$" + tipAmount.toFixed(2);
+    displayTotal.textContent = "$" + total.toFixed(2);
+  }
+}
+
+function resetCalculator() {
+  inputBillAmount.value = "0.0";
+  inputBillPeople.value = 1;
+  customTipPercentage.value = "";
+  displayTip.innerHTML = "$" + (0.0).toFixed(2);
+  displayTotal.innerHTML = "$" + (0.0).toFixed(2);
+  tipPercentage.forEach((val) => {
+    val.classList.remove("tip-percentage--active");
+  });
+}
