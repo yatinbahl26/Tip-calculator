@@ -17,11 +17,11 @@ inputBillPeople.addEventListener("input", peopleInputFun);
 customTipPercentage.addEventListener("input", tipInputFun);
 btnReset.addEventListener("click", resetCalculator);
 
-inputBillAmount.value = "0.0";
-inputBillPeople.value = "1";
+// inputBillAmount.value = "0.0";
+// inputBillPeople.value = "1";
 
 let billValue;
-let peopleValue = 1;
+let peopleValue;
 let tipValue;
 
 function billInputFun() {
@@ -34,6 +34,8 @@ function peopleInputFun() {
   if (peopleValue < 1) {
     error.style.display = "flex";
     inputBillPeople.style.border = "solid 1px red";
+    displayTip.innerHTML = "$" + (0.0).toFixed(2);
+    displayTotal.innerHTML = "$" + (0.0).toFixed(2);
   } else {
     error.style.display = "none";
     inputBillPeople.style.border = "none";
@@ -46,6 +48,11 @@ function tipInputFun(event) {
   tipPercentage.forEach(function (val) {
     val.classList.remove("tip-percentage--active");
   });
+  // setting up if condition to ensure if custom tip input field is empty
+  if (customTipPercentage.textContent === "") {
+    displayTip.innerHTML = "$" + (0.0).toFixed(2);
+    displayTotal.innerHTML = "$" + (0.0).toFixed(2);
+  }
   calculateTip();
 }
 
@@ -74,8 +81,9 @@ function calculateTip() {
 }
 
 function resetCalculator() {
-  inputBillAmount.value = "0.0";
-  inputBillPeople.value = 1;
+  // setting values of both input fields to empty
+  inputBillAmount.value = "";
+  inputBillPeople.value = "";
   customTipPercentage.value = "";
   displayTip.innerHTML = "$" + (0.0).toFixed(2);
   displayTotal.innerHTML = "$" + (0.0).toFixed(2);
