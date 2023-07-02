@@ -17,9 +17,6 @@ inputBillPeople.addEventListener("input", peopleInputFun);
 customTipPercentage.addEventListener("input", tipInputFun);
 btnReset.addEventListener("click", resetCalculator);
 
-// inputBillAmount.value = "0.0";
-// inputBillPeople.value = "1";
-
 let billValue;
 let peopleValue;
 let tipValue;
@@ -34,8 +31,12 @@ function peopleInputFun() {
   if (peopleValue < 1) {
     error.style.display = "flex";
     inputBillPeople.style.border = "solid 1px red";
-    displayTip.innerHTML = "$" + (0.0).toFixed(2);
-    displayTotal.innerHTML = "$" + (0.0).toFixed(2);
+
+    displayTip.innerHTML = setCurrency(0.0);
+    displayTotal.innerHTML = setCurrency(0.0);
+
+    // displayTip.innerHTML = "$" + (0.0).toFixed(2);
+    // displayTotal.innerHTML = "$" + (0.0).toFixed(2);
   } else {
     error.style.display = "none";
     inputBillPeople.style.border = "none";
@@ -50,8 +51,8 @@ function tipInputFun(event) {
   });
   // setting up if condition to ensure if custom tip input field is empty
   if (customTipPercentage.textContent === "") {
-    displayTip.innerHTML = "$" + (0.0).toFixed(2);
-    displayTotal.innerHTML = "$" + (0.0).toFixed(2);
+    displayTip.innerHTML = setCurrency(0.0);
+    displayTotal.innerHTML = setCurrency(0.0);
   }
   calculateTip();
 }
@@ -75,8 +76,11 @@ function calculateTip() {
   if (peopleValue >= 1) {
     let tipAmount = (billValue * tipValue) / peopleValue;
     let total = (billValue + tipAmount) / peopleValue;
-    displayTip.textContent = "$" + tipAmount.toFixed(2);
-    displayTotal.textContent = "$" + total.toFixed(2);
+    displayTip.textContent = setCurrency(tipAmount);
+    displayTotal.textContent = setCurrency(total);
+
+    // displayTip.textContent = "$" + tipAmount.toFixed(2);
+    // displayTotal.textContent = "$" + total.toFixed(2);
   }
 }
 
@@ -85,9 +89,22 @@ function resetCalculator() {
   inputBillAmount.value = "";
   inputBillPeople.value = "";
   customTipPercentage.value = "";
-  displayTip.innerHTML = "$" + (0.0).toFixed(2);
-  displayTotal.innerHTML = "$" + (0.0).toFixed(2);
+
+  displayTip.innerHTML = setCurrency(0.0);
+  displayTotal.innerHTML = setCurrency(0.0);
+
+  // displayTip.innerHTML = "$" + (0.0).toFixed(2);
+  // displayTotal.innerHTML = "$" + (0.0).toFixed(2);
   tipPercentage.forEach((val) => {
     val.classList.remove("tip-percentage--active");
   });
+}
+
+function setCurrency(curr) {
+  const userCurrency = "en-US";
+  const currencyFormatter = new Intl.NumberFormat(userCurrency, {
+    style: "currency",
+    currency: userCurrency,
+  });
+  return currencyFormatter.format(curr);
 }
