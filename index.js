@@ -26,35 +26,39 @@ function billInputFun() {
   calculateTip();
 }
 
-function peopleInputFun() {
+function peopleInputFun(event) {
   peopleValue = parseFloat(inputBillPeople.value);
   if (peopleValue < 1) {
-    error.style.display = "flex";
+    error.style.visibility = "visible";
     inputBillPeople.style.border = "solid 1px red";
 
-    displayTip.innerHTML = setCurrency(0.0);
-    displayTotal.innerHTML = setCurrency(0.0);
-
-    // displayTip.innerHTML = "$" + (0.0).toFixed(2);
-    // displayTotal.innerHTML = "$" + (0.0).toFixed(2);
-  } else {
-    error.style.display = "none";
+    displayTip.textContent = setCurrency(0.0);
+    displayTotal.textContent = setCurrency(0.0);
+  } else if (event.target.value === "") {
+    error.style.visibility = "hidden";
     inputBillPeople.style.border = "none";
-    calculateTip();
+
+    displayTip.textContent = setCurrency(0.0);
+    displayTotal.textContent = setCurrency(0.0);
+  } else {
+    error.style.visibility = "hidden";
+    inputBillPeople.style.border = "none";
   }
+  calculateTip();
 }
 
-function tipInputFun(event) {
+function tipInputFun() {
   tipValue = parseFloat(event.target.value) / 100;
   tipPercentage.forEach(function (val) {
     val.classList.remove("tip-percentage--active");
   });
-  // setting up if condition to ensure if custom tip input field is empty
-  if (customTipPercentage.textContent === "") {
-    displayTip.innerHTML = setCurrency(0.0);
-    displayTotal.innerHTML = setCurrency(0.0);
-  }
+
   calculateTip();
+  // setting up if condition to ensure if custom tip input field is empty
+  if (customTipPercentage.value === "") {
+    displayTip.textContent = setCurrency(0.0);
+    displayTotal.textContent = setCurrency(0.0);
+  }
 }
 
 tipPercentage.forEach(function (val) {
@@ -64,12 +68,12 @@ tipPercentage.forEach(function (val) {
 function handleClick(event) {
   tipPercentage.forEach(function (val) {
     val.classList.remove("tip-percentage--active");
-    if (event.target.innerHTML == val.innerHTML) {
+    if (event.target.textContent == val.textContent) {
       val.classList.add("tip-percentage--active");
-      tipValue = parseFloat(val.innerHTML) / 100;
+      tipValue = parseFloat(val.textContent) / 100;
+      calculateTip();
     }
   });
-  calculateTip();
 }
 
 function calculateTip() {
@@ -78,9 +82,6 @@ function calculateTip() {
     let total = (billValue + tipAmount) / peopleValue;
     displayTip.textContent = setCurrency(tipAmount);
     displayTotal.textContent = setCurrency(total);
-
-    // displayTip.textContent = "$" + tipAmount.toFixed(2);
-    // displayTotal.textContent = "$" + total.toFixed(2);
   }
 }
 
@@ -90,21 +91,19 @@ function resetCalculator() {
   inputBillPeople.value = "";
   customTipPercentage.value = "";
 
-  displayTip.innerHTML = setCurrency(0.0);
-  displayTotal.innerHTML = setCurrency(0.0);
+  displayTip.textContent = setCurrency(0.0);
+  displayTotal.textContent = setCurrency(0.0);
 
-  // displayTip.innerHTML = "$" + (0.0).toFixed(2);
-  // displayTotal.innerHTML = "$" + (0.0).toFixed(2);
   tipPercentage.forEach((val) => {
     val.classList.remove("tip-percentage--active");
   });
 }
 
 function setCurrency(curr) {
-  const userCurrency = "en-US";
+  const userCurrency = navigator.language;
   const currencyFormatter = new Intl.NumberFormat(userCurrency, {
     style: "currency",
-    currency: userCurrency,
+    currency: "USD",
   });
   return currencyFormatter.format(curr);
 }
